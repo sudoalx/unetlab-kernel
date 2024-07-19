@@ -1,0 +1,28 @@
+
+--- a/submodules/ubuntu-kernel/net/bridge/br_input.c
++++ b/submodules/ubuntu-kernel/net/bridge/br_input.c
+@@ -369,7 +369,11 @@
+ 			return RX_HANDLER_PASS;
+
+ 		case 0x01:	/* IEEE MAC (Pause) */
+-			goto drop;
++			fwd_mask |= p->br->group_fwd_mask;
++			if (fwd_mask & (1u << dest[5]))
++				goto forward;
++			else
++				goto drop;
+
+ 		case 0x0E:	/* 802.1AB LLDP */
+ 			fwd_mask |= p->br->group_fwd_mask;
+--- a/submodules/ubuntu-kernel/net/bridge/br_sysfs_br.c
++++ b/submodules/ubuntu-kernel/net/bridge/br_sysfs_br.c
+@@ -179,9 +179,6 @@
+ static int set_group_fwd_mask(struct net_bridge *br, unsigned long val,
+ 			      struct netlink_ext_ack *extack)
+ {
+-	if (val & BR_GROUPFWD_RESTRICTED)
+-		return -EINVAL;
+-
+ 	br->group_fwd_mask = val;
+
+ 	return 0;
