@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PVE_COMMIT=4cab886f26f9c8638593b8c553996c97ca9acc21
+PVE_VERSION=6.8.4-2
 
 set -e
 
@@ -14,10 +15,14 @@ fi
 # Adding prerequisites
 apt-get install -y git build-essential dh-make dh-python sphinx-common asciidoc-base bison dwarves flex libdw-dev libelf-dev libiberty-dev libnuma-dev libslang2-dev libssl-dev lintian lz4 python3-dev xmlto zlib1g-dev
 
+# Removing conflicting packages
+apt-get purge -y proxmox-headers*
+
 # Cloning UNetLab patch
 git clone https://github.com/dainok/unetlab-kernel /usr/src/unetlab-kernel
 
 # Cloning PVE kernel
+rm -rf /usr/src/pve-kernel
 git clone git://git.proxmox.com/git/pve-kernel.git /usr/src/pve-kernel
 cd /usr/src/pve-kernel
 git checkout $PVE_COMMIT
