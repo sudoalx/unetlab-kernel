@@ -46,4 +46,4 @@ git push origin --tags
 
 # Create release
 echo -e $NOTES
-# gh release create ${PVE_VERSION} --latest --target=master --notes "${NOTES}" /usr/src/pve-kernel/proxmox-headers-*unl_*.deb /usr/src/pve-kernel/proxmox-kernel-*unl-signed*.deb /usr/src/pve-kernel/proxmox-kernel-*unl_*.deb
+# gh release create ${PVE_VERSION} --latest --target=master --title ${PVE_VERSION} --notes "${NOTES}" /usr/src/pve-kernel/proxmox-headers-*unl_*.deb /usr/src/pve-kernel/proxmox-kernel-*unl-signed*.deb /usr/src/pve-kernel/proxmox-kernel-*unl_*.deb
