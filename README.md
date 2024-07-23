@@ -9,7 +9,7 @@ echo 65535 > /sys/class/net/vmbr1/bridge/group_fwd_mask
 echo 0 > /sys/devices/virtual/net/vmbr1/bridge/multicast_snooping
 ```
 
-The scripts can be added to `/etc/network/interfaces` so they are called once interfaces transition to the `up` state.
+The scripts can be added to `/etc/network/interfaces` so they are called once when interfaces transition to the `up` state.
 
 ## Build/update the patch
 
