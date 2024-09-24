@@ -137,6 +137,7 @@ if git rev-parse -q --verify "refs/tags/${PVE_VERSION}" &>/dev/null; then
     echo
     if [[ $REPLY =~ ^[Oo]$ ]]; then
         git tag -d ${PVE_VERSION}
+        git push origin --delete ${PVE_VERSION}
         git tag ${PVE_VERSION} -a
         git push origin --tags
     else
