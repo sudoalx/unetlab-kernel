@@ -161,7 +161,7 @@ else
         echo -e "${BLUE}Creating GitHub release for version: ${PVE_VERSION} in the ${PATCHES_REPO} repository.${NC}"
         # Display release notes
         echo -e "$NOTES"
-        gh release create ${PVE_VERSION} --latest --target=master --title "${PVE_VERSION}" --notes "${NOTES}" ${PVE_KERNEL_DIR}/proxmox-headers-*unl_*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*unl-signed*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*unl_*.deb
+        gh release create ${PVE_VERSION} --latest --target=master --title "${PVE_VERSION}" --notes "${NOTES}" ${PVE_KERNEL_DIR}/proxmox-headers-*${CUSTOM_POSTFIX}_*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*${CUSTOM_POSTFIX}-signed*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*${CUSTOM_POSTFIX}_*.deb
         echo -e "${GREEN}Release created successfully. You can find it at: https://github.com/${PATCHES_REPO}/releases/tag/${PVE_VERSION}${NC}"
     fi
     echo -e "${GREEN}You can find the compiled kernel in the ${PVE_KERNEL_DIR} directory.${NC}"
