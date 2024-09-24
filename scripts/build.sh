@@ -30,10 +30,10 @@ function install_prerequisites() {
     done
 }
 
-# Check if running on a dedicated PVE installation
-PVE=$(dpkg -l | grep -c "proxmox-kernel-[0-9.-]\+-pve-signed")
+# Check local environment
+PVE=$(dpkg -l | egrep "proxmox-kernel-[0-9.-]+-pve-signed" | wc -l)
 if [ "$PVE" -ne 1 ]; then
-    echo "ERROR: Script must run on a dedicated PVE installation."
+    echo ERROR: script must run on a dedicated PVE installation
     exit 1
 fi
 
