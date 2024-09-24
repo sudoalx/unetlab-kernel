@@ -104,10 +104,15 @@ fi
 cd ${PVE_KERNEL_DIR}
 git checkout $PVE_COMMIT
 
-# Clean and prepare build directory
-echo -e "${BLUE}Cleaning and preparing build directory.${NC}"
-make clean
-make build-dir-fresh
+# Ask before cleaning make
+read -p "Do you want to clean the make files? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    # Clean and prepare build directory
+    echo -e "${BLUE}Cleaning and preparing build directory.${NC}"
+    make clean
+    make build-dir-fresh
+fi
 
 # Apply the transparent bridge patch
 echo -e "${BLUE}Patching the kernel.${NC}"
