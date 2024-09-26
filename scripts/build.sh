@@ -16,7 +16,7 @@ GH_REPO="https://github.com/${PATCHES_REPO}.git"
 PVE_REPO="git://git.proxmox.com/git/pve-kernel.git"
 PVE_KERNEL_DIR="/usr/src/pve-kernel"
 UNETLAB_KERNEL_DIR="/usr/src/unetlab-kernel"
-CUSTOM_POSTFIX="pnetlab" # Custom postfix for the kernel version: -pve-${CUSTOM_POSTFIX}
+CUSTOM_SUFIX="pnetlab" # Custom postfix for the kernel version: proxmox-kernel-*${CUSTOM_SUFIX}*.deb
 NOTES="UNetLab Kernel for PVE ${PVE_VERSION}\nOriginal commit:\n\n- Title: update ABI file for ${PVE_VERSION}-pve\n- Hash: \`${PVE_COMMIT}\`\n- Link: [git.proxmox.com](https://git.proxmox.com/?p=pve-kernel.git;a=commit;h=${PVE_COMMIT})"
 
 # Exit on error
@@ -40,7 +40,7 @@ function check_package() {
 function install_prerequisites() {
     echo -e "${BLUE}Updating package lists...${NC}"
     apt-get update
-    REQUIRED_PACKAGES=(git build-essential dh-make dh-python sphinx-common asciidoc-base bison dwarves flex libdw-dev libelf-dev libiberty-dev libnuma-dev libslang2-dev libssl-dev lintian lz4 python3-dev xmlto zlib1g-dev)
+    REQUIRED_PACKAGES=(build-essential dh-make dh-python sphinx-common asciidoc-base bison dwarves flex libdw-dev libelf-dev libiberty-dev libnuma-dev libslang2-dev libssl-dev lintian lz4 python3-dev xmlto zlib1g-dev)
     for PACKAGE in "${REQUIRED_PACKAGES[@]}"; do
         check_package "$PACKAGE"
     done
@@ -64,7 +64,7 @@ fi
 install_prerequisites
 
 # Remove conflicting packages (proxmox-headers)
-HEADERS=$(dpkg -l | grep -c "proxmox-headers")
+HEADERS=$(dpkg -l | grep -c "proxmox-headers") || true
 if [ "$HEADERS" -ne 0 ]; then
     echo -e "${YELLOW}Removing conflicting proxmox-headers packages.${NC}"
     apt-get purge -y proxmox-headers* || true # Ignore errors
@@ -116,7 +116,7 @@ fi
 
 # Apply the transparent bridge patch
 echo -e "${BLUE}Patching the kernel.${NC}"
-sed -i 's/^EXTRAVERSION=.*/EXTRAVERSION=-$(KREL)-pve-'$CUSTOM_POSTFIX'/' ${PVE_KERNEL_DIR}/Makefile
+sed -i /usr/src/pve-kernel/Makefile -e "s/^EXTRAVERSION=.*/EXTRAVERSION=-\$\(KREL\)-pve-pnetlab/"
 patch -p1 <${UNETLAB_KERNEL_DIR}/patches/transparent-bridge.patch
 
 # Compile the kernel
@@ -161,7 +161,7 @@ else
         echo -e "${BLUE}Creating GitHub release for version: ${PVE_VERSION} in the ${PATCHES_REPO} repository.${NC}"
         # Display release notes
         echo -e "$NOTES"
-        gh release create ${PVE_VERSION} --latest --target=master --title "${PVE_VERSION}" --notes "${NOTES}" ${PVE_KERNEL_DIR}/proxmox-headers-*${CUSTOM_POSTFIX}_*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*${CUSTOM_POSTFIX}-signed*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*${CUSTOM_POSTFIX}_*.deb
+        gh release create ${PVE_VERSION} --latest --target=master --title "${PVE_VERSION}" --notes "${NOTES}" ${PVE_KERNEL_DIR}/proxmox-headers-*${CUSTOM_SUFIX}_*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*${CUSTOM_SUFIX}-signed*.deb ${PVE_KERNEL_DIR}/proxmox-kernel-*${CUSTOM_SUFIX}_*.deb
         echo -e "${GREEN}Release created successfully. You can find it at: https://github.com/${PATCHES_REPO}/releases/tag/${PVE_VERSION}${NC}"
     fi
     echo -e "${GREEN}You can find the compiled kernel in the ${PVE_KERNEL_DIR} directory.${NC}"
