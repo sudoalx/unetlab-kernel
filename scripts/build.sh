@@ -22,9 +22,6 @@ NOTES="UNetLab Kernel for PVE ${PVE_VERSION}\nOriginal commit:\n\n- Title: updat
 # Exit on error
 set -e
 
-# Set default git repository
-gh repo set-default ${PATCHES_REPO}
-
 # Function to check if required packages are installed
 function check_package() {
     PACKAGE=$1
@@ -154,6 +151,8 @@ fi
 if ! command -v gh &>/dev/null; then
     echo -e "${RED}GitHub CLI (gh) not found, please install it to create releases.${NC}"
 else
+    # Set default git repository
+    gh repo set-default ${PATCHES_REPO}
     # Create a release in the PATCHES_REPO
     read -p "Do you want to create a release on GitHub? (y/n) " -n 1 -r
     echo
